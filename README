@@ -1,0 +1,259 @@
+================================================================================
+SINDRI
+================================================================================
+
+A marketplace for makers. Buy and sell code, design, and tech services with
+escrow protection — the seller doesn't get paid until the buyer confirms the
+work, or a dispute window passes.
+
+Sindri is free and open-source software.
+
+
+--------------------------------------------------------------------------------
+QUICK START
+--------------------------------------------------------------------------------
+
+You need: Go 1.22+, Node 20+, PostgreSQL 15+, and make.
+
+  1. Install tools, create .env, verify the DB is reachable
+       make setup
+
+  2. Apply migrations to both dev and test databases
+       make migrate
+
+  3. Run the API (backend)
+       make run
+
+  4. In a second terminal, run the frontend
+       make web-dev
+
+  5. Optional: seed 1000 users + products + wallets for local testing
+       go run ./cmd/seed
+
+Backend listens on http://localhost:8080
+Frontend dev server on http://localhost:5173 (Vite default), proxied to backend.
+
+Log in with one of the seeded users:
+
+  pitrucci@example.com    hunter2hunter2
+  romeo@example.com       hunter2hunter2
+  james@example.com       hunter2hunter2
+
+...or any sindri_NNNN@example.com created by the seed, same password.
+
+
+--------------------------------------------------------------------------------
+PROJECT LAYOUT
+--------------------------------------------------------------------------------
+
+cmd/
+  api/            HTTP server entrypoint
+  worker/         Auto-release worker (runs every 5 min)
+  admin-cli/      Promote a user to admin
+  seed/           Generate fake users, products, wallets for local testing
+
+internal/
+  admin/          Admin operations (users, warnings, tickets, settings)
+  auth/           JWT manager, middleware, DB-backed user checker
+  category/       Category tree (two levels: parent + child)
+  chat/           Encrypted chat, WebSocket hub, attachments
+  crypto/         AES-256-GCM for chat at rest
+  currency/       Currency metadata (codes, symbols, decimal digits)
+  db/             Connection pool + sqlc-generated query package
+  httpapi/        HTTP handlers and router
+  notification/   In-app notifications (DB + WebSocket push)
+  order/          Orders, invoices, escrow, disputes
+  product/        Product listings, images, search
+  profile/        Public user profiles, geek stats
+  review/         Buyer-to-seller reviews
+  settings/       Platform settings (commission, escrow days, KYC gates)
+  user/           Registration, auth, search
+  wallet/         Balances, deposits, ledger
+  withdrawal/     Withdrawal requests + admin review
+
+migrations/       Goose SQL migrations
+
+web/              Vue 3 + TypeScript frontend
+  public/         Static assets (logo.svg, logo-badge.svg, ...)
+  src/
+    components/   Reusable Vue components
+    composables/  Composition API helpers (e.g. useBrand)
+    config/       Runtime config (brand, API URLs)
+    lib/          Utilities (money formatting, WS client)
+    stores/       Pinia stores (auth, chat, notifications, panel)
+    views/        Page-level Vue components
+
+
+--------------------------------------------------------------------------------
+COMMANDS
+--------------------------------------------------------------------------------
+
+All commands live in the Makefile. Run make (or make help) for the full list.
+
+  make setup                    One-time: install tools, copy .env, verify DB
+  make run                      Run the API server
+  make worker                   Run the auto-release worker
+  make web-dev                  Run the frontend dev server
+  make test                     Run all tests against DATABASE_URL_TEST
+  make test-verbose             Same, with -v -race
+  make migrate                  Apply pending migrations to dev + test DB
+  make migrate-create NAME=foo  Create a new migration
+  make migrate-down             Roll back the last migration
+  make sqlc                     Regenerate type-safe Go from SQL
+  make build                    go build ./...
+  make lint                     go vet ./...
+  make fmt                      gofmt -w .
+  make tidy                     go mod tidy
+  make promote EMAIL=x@y.z      Promote a user to admin
+
+
+--------------------------------------------------------------------------------
+ENVIRONMENT
+--------------------------------------------------------------------------------
+
+Copy .env.example to .env and fill in:
+
+  DATABASE_URL           required    Postgres URL for the dev database
+  DATABASE_URL_TEST      required    Postgres URL for the test database
+  APP_ALLOWED_ORIGINS    required    Comma-separated WS origin allowlist
+                                     e.g. http://localhost:5173
+  JWT_SECRET             prod only   Signs JWTs; dev fallback logs a warning
+  CHAT_ENCRYPTION_KEY    prod only   Base64-encoded 32 bytes for AES-256-GCM
+  HTTP_PORT              optional    API port (default 8080)
+  UPLOADS_DIR            optional    Where uploaded files go (default ./uploads)
+  COOKIE_SECURE          optional    Force secure cookies (auto true in prod)
+  VITE_API_URL           required    Backend URL the Vite dev proxy targets
+  VITE_APP_BRAND_NAME    optional    Brand name in the topbar (default sindri)
+
+make test deliberately overrides DATABASE_URL to point at DATABASE_URL_TEST,
+so tests never touch your dev database.
+
+
+--------------------------------------------------------------------------------
+BRAND NAME AND LOGO
+--------------------------------------------------------------------------------
+
+The brand name is runtime config, not code and not i18n. To rebrand:
+
+  1. Change VITE_APP_BRAND_NAME in web/.env (or .env.local for a personal
+     override).
+  2. Restart the dev server — the topbar picks up the new name automatically.
+  3. If the accent color changes too, update --accent and --accent-hover in
+     the theme CSS. The inline >_ mark inherits currentColor, so it recolors
+     on its own.
+  4. If you also want to change the mark itself (currently the >_ shell
+     glyph), replace web/public/logo.svg (transparent, currentColor) and
+     web/public/logo-badge.svg (background baked in, used as the favicon).
+
+The mark >_ was chosen because it reads as "shell / coding / terminal" and is
+name-agnostic — it survives a rename without redesign. The name Sindri comes
+from Norse mythology: the master smith who forged Mjolnir and Draupnir.
+
+See BRAND.md for the full contract.
+
+
+--------------------------------------------------------------------------------
+TESTING
+--------------------------------------------------------------------------------
+
+  All tests, against DATABASE_URL_TEST:
+    make test
+
+  Just one package:
+    DATABASE_URL=postgres://.../sindri_test go test ./internal/admin/... -v
+
+  A single test:
+    DATABASE_URL=postgres://.../sindri_test go test ./internal/admin/... -run TestSetKYC -v
+
+Tests follow the conventions in DECISIONS.md:
+
+  - DB cleanup before any assert (ADR-014) — register t.Cleanup immediately
+    after a resource ID exists, before any t.Fatal.
+
+  - Integration tests, no browser E2E (ADR-013) — httptest.Server against a
+    real DB catches most bugs at a fraction of the cost.
+
+
+--------------------------------------------------------------------------------
+ARCHITECTURE DECISIONS
+--------------------------------------------------------------------------------
+
+DECISIONS.md records every policy-level decision — how escrow works, why the
+withdrawal flow is admin-reviewed, why passwords are Argon2id, why chat is not
+E2EE, and so on. Read it before changing anything that looks like a rule.
+
+New decisions get appended as ADR-NNN. Don't rewrite history.
+
+
+--------------------------------------------------------------------------------
+SEED DATA
+--------------------------------------------------------------------------------
+
+For local development and demos, cmd/seed populates the database with 1000
+fake users, each with 10–20 products and a funded wallet. Three "named"
+accounts always exist:
+
+  pitrucci@example.com
+  romeo@example.com
+  james@example.com
+
+All with password hunter2hunter2. Generated users follow the pattern
+sindri_NNNN@example.com, same password.
+
+  Full seed (1000 users):
+    go run ./cmd/seed
+
+  Smaller run:
+    go run ./cmd/seed -users 100 -products-min 3 -products-max 8
+
+  Re-create only the three named accounts (useful after a DB wipe):
+    go run ./cmd/seed -users 0
+
+  Clean up all sindri_* users (named users are kept):
+    go run ./cmd/seed -clean
+
+The seed is idempotent: re-running it will reset the named users' passwords
+and skip the generated ones that already exist.
+
+
+--------------------------------------------------------------------------------
+CONTRIBUTING
+--------------------------------------------------------------------------------
+
+Sindri is open-source and contributions are welcome.
+
+  - Fork the repository.
+  - Create a branch for your change.
+  - Run make test and make lint before opening a pull request.
+  - Keep commits focused; one logical change per commit.
+  - Read DECISIONS.md before changing anything that looks like policy.
+
+For larger changes, open an issue first to discuss the approach.
+
+
+--------------------------------------------------------------------------------
+STATUS
+--------------------------------------------------------------------------------
+
+MVP, single-instance deployment. See DECISIONS.md for what that implies
+(no horizontal scaling, in-memory WebSocket hub, per-instance rate limits).
+
+Known gaps:
+
+  - KYC is partially integrated — admin override exists, but there is no
+    user-facing submission flow. See ADR-016.
+
+  - No refresh tokens. JWT lifetime is 24h; the DB check on every request
+    means a disabled user loses access immediately, but a demoted admin
+    keeps their non-admin session for up to 24h of authenticated browsing.
+
+
+--------------------------------------------------------------------------------
+LICENSE
+--------------------------------------------------------------------------------
+
+Sindri is free and open-source software, released under the MIT License.
+
+You are free to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the software, subject to the conditions of the MIT
+License. See the LICENSE file for the full text.

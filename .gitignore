@@ -1,0 +1,11 @@
+.env
+*.log
+/bin/
+/dist/
+/tmp/
+node_modules/
+.DS_Store
+coverage.out
+coverage.html
+uploads/*
+!uploads/.gitkeep

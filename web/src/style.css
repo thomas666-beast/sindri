@@ -1,0 +1,176 @@
+/* ── design tokens ──────────────────────────────────── */
+:root {
+  /* backgrounds */
+  --bg: #08090c;
+  --surface: #0f1115;
+  --surface-hover: #141820;
+  --surface-elevated: #161a20;
+
+  /* borders */
+  --border: #1e2229;
+  --border-strong: #2a3039;
+
+  /* text */
+  --text: #e2e5e9;
+  --text-secondary: #6b7280;
+  --text-tertiary: #3a4150;
+
+  /* accent — green is for state/action, not decoration */
+  --accent: #00e5a0;
+  --accent-hover: #00f5aa;
+  --accent-dim: rgba(0, 229, 160, 0.1);
+
+  /* info — blue for links and buyer states */
+  --info: #4a9eff;
+  --info-dim: rgba(74, 158, 255, 0.1);
+
+  /* warning / danger */
+  --warning: #ffb454;
+  --danger: #ff5c5c;
+  --danger-dim: rgba(255, 92, 92, 0.1);
+
+  /* radius */
+  --radius: 6px;
+  --radius-sm: 4px;
+
+  /* shadow */
+  --shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-focus: 0 0 0 2px rgba(0, 229, 160, 0.25);
+
+  /* spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+}
+
+/* ── resets ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevents the whole page from scrolling */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  font-feature-settings: 'ss01', 'zero', 'tnum';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── typography ─────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--text);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.1s;
+}
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: none;
+}
+
+/* ── form elements (global default) ─────────────────── */
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  font-feature-settings: inherit;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+input[type='search'],
+input[type='url'],
+textarea,
+select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.1s, box-shadow 0.1s;
+}
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+input[type='number']:focus,
+input[type='search']:focus,
+input[type='url']:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-focus);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ── scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a4150;
+}
+
+/* ── selection ──────────────────────────────────────── */
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ── focus ring ─────────────────────────────────────── */
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── utility: small caps label ──────────────────────── */
+.label-caps {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
