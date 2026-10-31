@@ -11,7 +11,7 @@ require (
 	github.com/jackc/pgx/v5 v5.11.0
 	github.com/joho/godotenv v1.5.1
 	github.com/thomas666-beast/cryptkit v1.0.0
-	github.com/thomas666-beast/reqval v1.0.1-0.20261027072000-14d2aca23600
+	github.com/thomas666-beast/reqval v1.0.1
 )
 
 require (

@@ -91,8 +91,14 @@ github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/thomas666-beast/cryptkit v1.0.0 h1:HkN7IM+sCcCLFVcxlxzWZ5e1NwiCL100QPga/1ebgh8=
 github.com/thomas666-beast/cryptkit v1.0.0/go.mod h1:QxM8ok6+Qu5z3PA4x+hZS2Yz/Wj0AN6LlsmzC0TlNFk=
+github.com/thomas666-beast/reqval v0.0.0-20261027072000-14d2aca23600 h1:9e8orRds6EhJmfprNQI1oB8DkAnireyfpOIMowhWxzM=
+github.com/thomas666-beast/reqval v0.0.0-20261027072000-14d2aca23600/go.mod h1:IUjfjywwEZsIIUc3Y6ZftAwpHF1QRl+O0W/n08ebtQY=
+github.com/thomas666-beast/reqval v1.0.0 h1:uWqb9SnzHpi3HIJYo920p41BNyCCcuZiQUSzXscDjN4=
+github.com/thomas666-beast/reqval v1.0.0/go.mod h1:IUjfjywwEZsIIUc3Y6ZftAwpHF1QRl+O0W/n08ebtQY=
 github.com/thomas666-beast/reqval v1.0.1-0.20261027072000-14d2aca23600 h1:rojuhs7O2sUe1TB5U/Mp2QqPZs7uuyJ9R+UxTY5IACQ=
 github.com/thomas666-beast/reqval v1.0.1-0.20261027072000-14d2aca23600/go.mod h1:IUjfjywwEZsIIUc3Y6ZftAwpHF1QRl+O0W/n08ebtQY=
+github.com/thomas666-beast/reqval v1.0.1 h1:rAl3lZH9ap+ZMc1fqCq8ZnrvxClw1lnTJlM08TT30RM=
+github.com/thomas666-beast/reqval v1.0.1/go.mod h1:IUjfjywwEZsIIUc3Y6ZftAwpHF1QRl+O0W/n08ebtQY=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.3.1 h1:waO7eEiFDwidsBN6agj1vJQ4AG7lh2yqXyOXqhgQuyY=
